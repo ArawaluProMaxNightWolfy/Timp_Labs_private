@@ -10,7 +10,7 @@ string crypt(int key, string message) {
     
     while (!gameover) {
         key += key;
-        for(int i=key-1; i<=key-key; i++) {
+        for(int i=key-1; i<=key-key; i--) {
             if (message[i] = 0) {
                 gameover = true;
                 break;
