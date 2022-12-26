@@ -1,40 +1,43 @@
 #include "modAlphaCipher.h"
-modAlphaCipher::modAlphaCipher(const std::wstring& skey)
+#include <iostream>
+#include <algorithm>
+#include <string>
+modAlphaCipher::modAlphaCipher(const int skey)
 {
-    for (unsigned i=0; i<numAlpha.size(); i++) {
-        alphaNum[numAlpha[i]]=i;
+        key=skey;
     }
-    key = convert(skey);
+std::string modAlphaCipher::encrypt(const std::string& text)
+{
+    std::string t = "";
+    int poz = key - 1;
+    while(poz >= 0) {
+        for(uint i = poz; i < text.size(); i += key) {
+            t+=text[i];
+        }
+        poz -= 1;
+    }
+    return t;
 }
-std::wstring modAlphaCipher::encrypt(const std::wstring& open_text)
+std::string modAlphaCipher::decrypt(const std::string& dctext)
 {
-    std::vector<int> work = convert(open_text);
-    for(unsigned i=0; i < work.size(); i++) {
-        work[i] = (work[i] + key[i % key.size()]) % alphaNum.size();
+    std::string dct = dctext;
+    std::reverse(dct.begin(), dct.end());
+    int pozition = 0;
+    int strk = dct.size()/key;
+    std::string last = "";
+    int ost = dct.size()%key;
+    for (int i = 0; i < ost ; i++) {
+        last += dct[pozition];
+        dct.erase(pozition,1);
+        pozition += strk;
     }
-    return convert(work);
-}
-std::wstring modAlphaCipher::decrypt(const std::wstring& cipher_text)
-{
-    std::vector<int> work = convert(cipher_text);
-    for(unsigned i=0; i < work.size(); i++) {
-        work[i] = (work[i] + alphaNum.size() - key[i % key.size()]) % alphaNum.size();
+    pozition = strk - 1;
+    std::string rezult = "";
+    while (pozition >= 0) {
+        for (uint i = pozition; i < dct.size(); i = i + strk) {
+            rezult += dct[i];
+        }
+        pozition -= 1;
     }
-    return convert(work);
-}
-inline std::vector<int> modAlphaCipher::convert(const std::wstring& s)
-{
-    std::vector<int> result;
-    for(auto c:s) {
-        result.push_back(alphaNum[c]);
-    }
-    return result;
-}
-inline std::wstring modAlphaCipher::convert(const std::vector<int>& v)
-{
-    std::wstring result;
-    for(auto i:v) {
-        result.push_back(numAlpha[i]);
-    }
-    return result;
+    return (rezult+last);
 }
