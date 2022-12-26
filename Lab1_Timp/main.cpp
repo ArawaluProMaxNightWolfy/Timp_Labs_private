@@ -1,40 +1,28 @@
 #include <iostream>
-#include <string>
-#include "Header.h"
-#include "modules.cpp"
+#include "modAlphaCipher.h"
 using namespace std;
-
-int main(){
-    bool gameover = false;
-    int key;                          //Запрос ключа
-    cout << "Введите ключ: ";
-    cin >> key;
-    TablMapReplace perestanovka(key); //_________
-    
-    string symbol;
-    string message;
-    while(gameover != true) {
-        cout << "Поменять ключ(k), Зашифровать сообщение(e), Расшифровать сообщение(d)" << endl;
-        cin >> symbol;
-        if (symbol == "k") {
-            cout << "Введите ключ: ";
-            cin >> key;
-            TablMapReplace perestanovka(key);
-        }
-        if (symbol == "e") {
-            cout << "Введите сообщение: ";
-            cin >> message;
-            cout << perestanovka.encrypt(message) << endl;
-        }
-        if (symbol == "d") {
-            cout << "Введите сообщение: ";
-            cin >> message;
-            cout << perestanovka.decrypt(message) << endl;
-        } 
-        if (symbol != "k" and symbol != "e" and symbol != "d") {
-            cout << "Хе-хе, думали, я не предусмотрел выход?" << endl;
-            gameover = true;
-        }
-    }
+void check(const wstring& Text, const wstring& key)
+{
+    wstring cipherText;
+    wstring decryptedText;
+    modAlphaCipher cipher(key);
+    cipherText = cipher.encrypt(Text);
+    decryptedText = cipher.decrypt(cipherText);
+    wcout<<"key="<<key<<endl;
+    wcout<<Text<<endl;
+    wcout<<cipherText<<endl;
+    wcout<<decryptedText<<endl;
+    if (Text == decryptedText)
+        wcout<<"Ok\n";
+    else
+        wcout<<"Err\n";
+}
+int main(int argc, char **argv)
+{
+    std::locale loc("ru_RU.UTF-8");
+    std::locale::global(loc); // установка глобальной локали
+    check(L"ЗЕЛЕНАЯЗЕЛЕНЬЗЕЛЕНИТЗЕЛЕНУЮЗЕЛЕНЬ",L"СИМПЛ");
+    check(L"ЗЕЛЕНАЯЗЕЛЕНЬЗЕЛЕНИТЗЕЛЕНУЮЗЕЛЕНЬ",L"ПРИМЕР");
+    check(L"ЗЕЛЕНАЯЗЕЛЕНЬЗЕЛЕНИТЗЕЛЕНУЮЗЕЛЕНЬ",L"АПЧХИ");
     return 0;
 }
