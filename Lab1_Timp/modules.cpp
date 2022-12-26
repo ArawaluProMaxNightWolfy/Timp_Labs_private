@@ -1,40 +1,40 @@
-#pragma once
-#include <iostream>
-#include <string>
-using namespace std;
-
-//Ниже находится то, что нужно поместить в modules.cpp
-string TablMapReplace::decrypt(string messageLocal) {
-    string message = messageLocal;
-    int key = main_key;
-    string shifr;
-	for (int i = 0; i <= message.length(); i += key + 1) {
-		int j = i + key;
-		if (j > message.length() - 1) {
-			j = message.length() - 1;
-		}
-		//Выше мы получили значения i(начала участка строки) и j(конца участка строки)
-        for(j; j >= i; j--) {
-            shifr.push_back(message[j]);
-        }
-		//Переставляем символы по индексам, добавляя в shifr
-	}
-	return shifr;
+#include "modAlphaCipher.h"
+modAlphaCipher::modAlphaCipher(const std::wstring& skey)
+{
+    for (unsigned i=0; i<numAlpha.size(); i++) {
+        alphaNum[numAlpha[i]]=i;
+    }
+    key = convert(skey);
 }
-string TablMapReplace::encrypt(string messageLocal) {
-    string message = messageLocal;
-    int key = main_key;
-    string shifr;
-	for (int i = 0; i <= message.length(); i += key + 1) {
-		int j = i + key;
-		if (j > message.length() - 1) {
-			j = message.length() - 1;
-		}
-		//Выше мы получили значения i(начала участка строки) и j(конца участка строки)
-        for(j; j >= i; j--) {
-            shifr.push_back(message[j]);
-        }
-		//Переставляем символы по индексам, добавляя в shifr
-	}
-	return shifr;
+std::wstring modAlphaCipher::encrypt(const std::wstring& open_text)
+{
+    std::vector<int> work = convert(open_text);
+    for(unsigned i=0; i < work.size(); i++) {
+        work[i] = (work[i] + key[i % key.size()]) % alphaNum.size();
+    }
+    return convert(work);
+}
+std::wstring modAlphaCipher::decrypt(const std::wstring& cipher_text)
+{
+    std::vector<int> work = convert(cipher_text);
+    for(unsigned i=0; i < work.size(); i++) {
+        work[i] = (work[i] + alphaNum.size() - key[i % key.size()]) % alphaNum.size();
+    }
+    return convert(work);
+}
+inline std::vector<int> modAlphaCipher::convert(const std::wstring& s)
+{
+    std::vector<int> result;
+    for(auto c:s) {
+        result.push_back(alphaNum[c]);
+    }
+    return result;
+}
+inline std::wstring modAlphaCipher::convert(const std::vector<int>& v)
+{
+    std::wstring result;
+    for(auto i:v) {
+        result.push_back(numAlpha[i]);
+    }
+    return result;
 }
