@@ -1,3 +1,4 @@
+#pragma once
 #include "modAlphaCipher.h"
 #include <iostream>
 #include <algorithm>
